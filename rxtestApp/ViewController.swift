@@ -7,14 +7,27 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ViewController: UIViewController {
+    private let disposeBag = DisposeBag()
 
+    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var textFiled: UITextField!
+    @IBOutlet weak var countBtn: UIButton!
+    
+    let viewModel = ViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        viewModel.userNameSubject.bind(to: Binder(self) {me, name in
+            me.label.text = name
+        })
+        .disposed(by: disposeBag)
+        
+        countBtn.rx.tap.bind(to: viewModel.btnTapped).disposed(by: disposeBag)
     }
-
-
 }
 
